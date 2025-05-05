@@ -1,0 +1,74 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+const int INF = 9999;
+
+int findMinVertex(vector<int>& key, vector<bool>& mstSet, int n) {
+    int minKey = INF, minIndex = -1;
+    for (int i = 0; i < n; i++) {
+        if (!mstSet[i] && key[i] < minKey) {
+            minKey = key[i];
+            minIndex = i;
+        }
+    }
+    return minIndex;
+}
+
+void primMST(vector<vector<int>>& graph, vector<string>& cities, int n) {
+    vector<int> key(n, INF);
+    vector<bool> mstSet(n, false);
+    vector<int> parent(n, -1);
+
+    key[0] = 0;
+
+    for (int count = 0; count < n - 1; count++) {
+        int u = findMinVertex(key, mstSet, n);
+        mstSet[u] = true;
+
+        for (int v = 0; v < n; v++) {
+            if (graph[u][v] != 0 && !mstSet[v] && graph[u][v] < key[v]) {
+                key[v] = graph[u][v];
+                parent[v] = u;
+            }
+        }
+    }
+
+    cout << "\nMinimum Spanning Tree Edges:\n";
+    int totalCost = 0;
+    for (int i = 1; i < n; i++) {
+        cout << cities[parent[i]] << " - " << cities[i]
+             << " : Cost = " << graph[i][parent[i]] << endl;
+        totalCost += graph[i][parent[i]];
+    }
+    cout << "Total Minimum Cost = " << totalCost << endl;
+}
+
+int main() {
+    int n;
+    cout << "Enter number of cities: ";
+    cin >> n;
+
+    vector<string> cities(n);
+    cout << "Enter names of " << n << " cities:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "City " << i + 1 << ": ";
+        cin >> cities[i];
+    }
+
+    vector<vector<int>> graph(n, vector<int>(n));
+
+    cout << "\nEnter cost to connect each pair of cities (0 if no direct connection):\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            cout << "Cost between " << cities[i] << " and " << cities[j] << ": ";
+            cin >> graph[i][j];
+            graph[j][i] = graph[i][j];  // Since it's undirected
+        }
+    }
+
+    primMST(graph, cities, n);
+
+    return 0;
+}
