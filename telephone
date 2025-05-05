@@ -1,0 +1,119 @@
+class TelephoneBook:
+    pass
+def hash_function(tel_no, size):
+    return tel_no % size
+
+def insert_linear_probing(size, records):
+    table = [None] * size
+    for name, tel_no in records:
+        index = hash_function(tel_no, size)
+        i = 0
+        while table[index] is not None and i < size:
+            i += 1
+            index = (index + 1) % size
+        if i == size:
+            print("Hash table full (Linear Probing).")
+        else:
+            entry = TelephoneBook()
+            entry.name = name
+            entry.tel_no = tel_no
+            table[index] = entry
+    return table
+
+def insert_quadratic_probing(size, records):
+    table = [None] * size
+    for name, tel_no in records:
+        index = hash_function(tel_no, size)
+        i = 0
+        while table[index] is not None and i < size:
+            i += 1
+            index = (hash_function(tel_no, size) + i * i) % size
+        if i == size:
+            print("Hash table full (Quadratic Probing).")
+        else:
+            entry = TelephoneBook()
+            entry.name = name
+            entry.tel_no = tel_no
+            table[index] = entry
+    return table
+
+def search_linear(table, tel_no):
+    size = len(table)
+    index = hash_function(tel_no, size)
+    comparisons = 0
+    i = 0
+    while table[index] is not None and i < size:
+        comparisons += 1
+        if table[index].tel_no == tel_no:
+            return comparisons
+        i += 1
+        index = (index + 1) % size
+    return 0
+
+def search_quadratic(table, tel_no):
+    size = len(table)
+    index = hash_function(tel_no, size)
+    comparisons = 0
+    i = 0
+    while table[index] is not None and i < size:
+        comparisons += 1
+        if table[index].tel_no == tel_no:
+            return comparisons
+        i += 1
+        index = (hash_function(tel_no, size) + i * i) % size
+    return 0
+
+def display_table(table):
+    print("\nIndex\tName\tTelephone No.")
+    for i, record in enumerate(table):
+        if record is not None:
+            print(f"{i}\t{record.name}\t{record.tel_no}")
+        else:
+            print(f"{i}\t--\t--")
+
+def main():
+    SIZE = 10
+    print("Telephone Book - Hash Table using Same Data")
+
+    records = []
+    n = int(input("Enter number of clients: "))
+    for _ in range(n):
+        name = input("Enter client name: ")
+        tel_no = int(input("Enter telephone number: "))
+        records.append((name, tel_no))
+
+    # Use same data for both probing methods
+    linear_table = insert_linear_probing(SIZE, records)
+    quadratic_table = insert_quadratic_probing(SIZE, records)
+
+    print("\nHash Table (Linear Probing):")
+    display_table(linear_table)
+
+    print("\nHash Table (Quadratic Probing):")
+    display_table(quadratic_table)
+
+    tel_no = int(input("\nEnter telephone number to search: "))
+
+    linear_cmp = search_linear(linear_table, tel_no)
+    quadratic_cmp = search_quadratic(quadratic_table, tel_no)
+
+    if linear_cmp:
+        print(f"\nLinear Probing: Found in {linear_cmp} comparisons.")
+    else:
+        print("\nLinear Probing: Number not found.")
+
+    if quadratic_cmp:
+        print(f"Quadratic Probing: Found in {quadratic_cmp} comparisons.")
+    else:
+        print("Quadratic Probing: Number not found.")
+
+    # Comparison
+    if linear_cmp and quadratic_cmp:
+        if linear_cmp < quadratic_cmp:
+            print("\nLinear Probing is faster.")
+        elif quadratic_cmp < linear_cmp:
+            print("\nQuadratic Probing is faster.")
+        else:
+            print("\nBoth methods took the same number of comparisons.")
+
+main()
