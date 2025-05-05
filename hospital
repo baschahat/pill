@@ -1,0 +1,61 @@
+#include <iostream>
+#include <queue>
+#include <string>
+using namespace std;
+
+// Define a structure for a Patient
+struct Patient {
+    string name;
+    int priority;  // 1 - Serious, 2 - Non-serious, 3 - General
+
+    // Overload the < operator to implement min-heap using priority_queue
+    bool operator<(const Patient& p) const {
+        return priority > p.priority; // Lower number = higher priority
+    }
+};
+
+int main() {
+    priority_queue<Patient> hospitalQueue;
+    int choice;
+    Patient p;
+
+    do {
+        cout << "\n--- Hospital Patient Queue ---\n";
+        cout << "1. Add patient\n";
+        cout << "2. Serve patient\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter patient name: ";
+                cin >> p.name;
+                cout << "Enter priority (1: Serious, 2: Non-serious, 3: General): ";
+                cin >> p.priority;
+                hospitalQueue.push(p);
+                cout << "Patient added to the queue.\n";
+                break;
+
+            case 2:
+                if (!hospitalQueue.empty()) {
+                    p = hospitalQueue.top();
+                    hospitalQueue.pop();
+                    cout << "Serving patient: " << p.name << " (Priority: " << p.priority << ")\n";
+                } else {
+                    cout << "No patients in the queue.\n";
+                }
+                break;
+
+            case 3:
+                cout << "Exiting...\n";
+                break;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}
