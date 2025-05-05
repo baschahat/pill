@@ -1,0 +1,87 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Subsection {
+public:
+    string title;
+};
+
+class Section {
+public:
+    string title;
+    vector<Subsection> subsections;
+};
+
+class Chapter {
+public:
+    string title;
+    vector<Section> sections;
+};
+
+class Book {
+public:
+    string title;
+    vector<Chapter> chapters;
+
+    void inputBook() {
+        cout << "Enter Book Title: ";
+        getline(cin, title);
+
+        int numChapters;
+        cout << "Enter number of chapters: ";
+        cin >> numChapters;
+        cin.ignore();
+
+        for (int i = 0; i < numChapters; i++) {
+            Chapter ch;
+            cout << "\nEnter title of Chapter " << i + 1 << ": ";
+            getline(cin, ch.title);
+
+            int numSections;
+            cout << "Enter number of sections in this chapter: ";
+            cin >> numSections;
+            cin.ignore();
+
+            for (int j = 0; j < numSections; j++) {
+                Section sec;
+                cout << "  Enter title of Section " << j + 1 << ": ";
+                getline(cin, sec.title);
+
+                int numSubsections;
+                cout << "  Enter number of subsections in this section: ";
+                cin >> numSubsections;
+                cin.ignore();
+
+                for (int k = 0; k < numSubsections; k++) {
+                    Subsection sub;
+                    cout << "    Enter title of Subsection " << k + 1 << ": ";
+                    getline(cin, sub.title);
+                    sec.subsections.push_back(sub);
+                }
+                ch.sections.push_back(sec);
+            }
+            chapters.push_back(ch);
+        }
+    }
+
+    void displayBook() {
+        cout << "\n\nBook Title: " << title << endl;
+        for (int i = 0; i < chapters.size(); i++) {
+            cout << "  Chapter " << i + 1 << ": " << chapters[i].title << endl;
+            for (int j = 0; j < chapters[i].sections.size(); j++) {
+                cout << "    Section " << j + 1 << ": " << chapters[i].sections[j].title << endl;
+                for (int k = 0; k < chapters[i].sections[j].subsections.size(); k++) {
+                    cout << "      Subsection " << k + 1 << ": " << chapters[i].sections[j].subsections[k].title << endl;
+                }
+            }
+        }
+    }
+};
+
+int main() {
+    Book b;
+    b.inputBook();
+    b.displayBook();
+    return 0;
+}
