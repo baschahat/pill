@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+#include <limits>
+using namespace std;
+
+const int MAX = 100;
+
+int main() {
+    int n;
+    cout << "Enter number of keys: ";
+    cin >> n;
+
+    vector<string> keys(n + 1);
+    vector<float> p(n + 1);
+
+    cout << "Enter sorted keys:\n";
+    for (int i = 1; i <= n; i++) {
+        cout << "Key " << i << ": ";
+        cin >> keys[i];
+    }
+
+    cout << "Enter search probabilities for each key:\n";
+    for (int i = 1; i <= n; i++) {
+        cout << "p[" << i << "] (for key " << keys[i] << "): ";
+        cin >> p[i];
+    }
+
+    // cost[i][j] = min cost of BST for keys i to j
+    float cost[n + 2][n + 2] = {0};
+    float sum[n + 2][n + 2] = {0};
+
+    // Initialize base cases
+    for (int i = 1; i <= n; i++) {
+        cost[i][i] = p[i];
+        sum[i][i] = p[i];
+    }
+
+    // DP to fill cost matrix
+    for (int L = 2; L <= n; L++) {  // L is length of interval
+        for (int i = 1; i <= n - L + 1; i++) {
+            int j = i + L - 1;
+            cost[i][j] = numeric_limits<float>::max();
+
+            sum[i][j] = sum[i][j - 1] + p[j];
+
+            for (int r = i; r <= j; r++) {
+                float c = ((r > i) ? cost[i][r - 1] : 0) +
+                          ((r < j) ? cost[r + 1][j] : 0) +
+                          sum[i][j];
+
+                if (c < cost[i][j])
+                    cost[i][j] = c;
+            }
+        }
+    }
+
+    cout << "\nMinimum cost of Optimal Binary Search Tree: " << cost[1][n] << endl;
+
+    return 0;
+}
